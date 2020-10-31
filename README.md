@@ -1,5 +1,5 @@
 # proxy
-unfa's Proxy Manager
+unfa's proxy manager
 
 ## What is this?
 
