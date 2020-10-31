@@ -1,11 +1,10 @@
 #!/bin/bash
 
-echo "unfa's proxy manager v. 0.1"
+echo "unfa's proxy manager v. 0.1 · https://github.com/unfa/proxy"
 echo
 
 
 help () {
-	echo "This script uses ffmpeg and symlinks to generate and manage proxy (low bitrate) footage that's suitable for video editing. The script will encode low-bitrate versions of original footage and store them under diffenet file names in respective directories. The idea is - the vidoe editor references the original files, but this script will replace the original files wiht symlinks pointing to either original full quality footage, or low-bitrate proxyu versions. For editing - you'd want to use the proxy versions, while for rendering - you'd want to close your video editor, replace the links so they point to original high-quality footage , then reload your video editing project and let it render using high quality sources. The main purpose of using this is to speed up footage decoding and disk read for video editing, as well as lower RAM usage during editing. Sometimes high bitrate footage may cause playback to drop off or stutter, using low bitrate footage can help with that. I've created this tool when I had to edit a video project in Olive 0.12 that had over 5 hours of high 15MPBS 4:4:4 3840x1080p 60 FPS footage as well as 4:2:0 30 FPS 4K footage of even higher bitrate. On my hardware Olive would not be able to play that smoothly, and the RAM usage would quickly kill my PC. Thanks to using this proxy tool, the editing and rendering both went smooth. This script encodes low-quality H.264 with GOP of 10 to balance betweeen file size and speed of seeking the file. Original resolution is preserved, and all audio tracks are encoded as 16-bit PCM for ease of seeking. Feel free to tweak the settings and suggest improvements."
 	echo -e "\nUsage - the script expects to be run in a directory containing MKV and MP4 footage and will work recursively from there. Possible commands are::\n"
 	echo -e "proxy.sh encode →\tgenerates proxy footage, renames original footage and creates symlinks under original footage filenames pointing to proxy. Use this before starting your editing."
 	echo -e "proxy.sh original →\treplaces symlinks to point to the original footage. Use this before a full quality render."
@@ -26,9 +25,7 @@ status () {
 
 encode () {
 	echo "Encode proxy"
-	
-	exit
-	
+		
 	find . -type f -name '*.m[kp][v4]' > files
 
 	while read f; do
