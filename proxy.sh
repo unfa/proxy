@@ -99,7 +99,7 @@ clean () {
 	
 	while read f; do
 		rm -v "$f.proxy"
-		mv -v "$f.original" "$f"
+		mv -vf "$f.original" "$f"
 		echo
 
 	done < files
