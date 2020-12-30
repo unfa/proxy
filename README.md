@@ -29,15 +29,19 @@ This will replace the symlinks and mkae them point to your original high-qulity 
 
        ./proxy.sh proxy
 
-1. After your project was published and you want to archive it, run the clean-up command:
+1. After your project was published and you want to archive it, run the `clean` command to restore your footage directory tree to it's original shape:
 
        ./proxy.sh clean
 
-This'll remove all proxy footage and move the original footage to it's original pfile names (overwritign the links). The goal is to restore the initial state of things. This is a good idea before archiving your project, if you don't want to keep your proxy footage around, which can be easily re-generated later.
+This will:
+- remove all proxy files
+- rename the original footage to it's original file names overwriting the links
+
+It's a good idea to do this before archiving your project, if you don't want to keep your proxy footage around, which can be easily re-generated later, and would be just wasted disk space.
 
 ## Limitations
 
-The progam only recognized MKV and MP4 files so far, because that's what I needed to digest. It requires ffmpeg to be installed in the system to handle video transcoding. The encoding options will preserve original resolutions, as that is likely to break video editing projects if not handled by the editor itself, it also retains all audio tracks and converts them to 16-bit PCM for fast seeking (file size is not gonna be much larger anyway).
+The script only recognizes MKV and MP4 files so far, because that's what I needed to digest. It requires ffmpeg to be installed in the system to handle video transcoding. The encoding options will preserve original resolutions, as that is likely to break video editing projects if not handled by the editor itself, it also retains all audio tracks and converts them to 16-bit PCM for fast seeking (file size is not gonna be much larger anyway).
 
 ## Known issues
 
