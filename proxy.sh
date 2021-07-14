@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "unfa's proxy manager v. 0.1.1"
+echo "unfa's proxy manager v. 0.1.2"
 echo
 
 
@@ -12,7 +12,7 @@ help () {
 	echo -e "proxy.sh proxy →\treplaces symlinks to point to the proxy footage. Use this before getting back to editin after a full quality render."
 	echo -e "proxy.sh help →\t\tprint this help text"
 	echo -e "proxy.sh clean →\tremoves proxy footage the symlinks, brings back the original footage to original state. Use before archiving the project."
-	echo -e "proxy.sh status s→\trecursively analyzes current directory and reports what's going on in there [NOT IMPLEMENTED YET]"
+	echo -e "proxy.sh status →\trecursively analyzes current directory and reports what's going on in there [NOT IMPLEMENTED YET]"
 }
 
 no_command () {
@@ -29,12 +29,40 @@ encode () {
 	
 #	exit
 	
-	find . -type f -iname '*.m[kp][v4]' > files
+	rm files-mkv files-mp4
+	
+	find . -type f -iname '*.mp4' > files-mp4
+	
+	while read f; do
+		#echo "Processed $(find . -type f -name *.original | wc -l), $(find . -type f -iname '*.m[kp][v4]' | grep -v '*.proxy' | grep -v '*.original' | wc -l) more to go."
+		#echo
+		echo "Processing MP4 $f..."
+		
+		if [[ $(readlink "$f") ]]; then
+			echo "The files was already processed, skipping."
+			continue
+		fi
+
+		ffmpeg -y -i "$f" -map 0:0 -map 0:1 -c:v libx264 -tune film -crf 38 -x264opts keyint=10 -pix_fmt yuv420p -b:a 128k -f mp4 "$f.proxy" 2> "$(basename "$f").ffmpeg_log"
+		
+		if [ $? -eq 0 ]; then
+			echo -ne " OK\n"
+		else
+			echo -ne " FAIL\n"
+			continue
+		fi
+		mv "$f" "$f.original"
+		ln -s "$(basename "$f").proxy" "$f"
+		echo
+
+	done < files-mp4
+	
+	find . -type f -iname '*.mkv' > files-mkv
 
 	while read f; do
-		echo "Processed $(find . -type f -name *.original | wc -l), $(find . -type f -iname *.m[kp][v4] | grep -v '*.proxy' | grep -v '*.original' | wc -l) more to go."
-		echo
-		echo "Processing $f..."
+		#echo "Processed $(find . -type f -name *.original | wc -l), $(find . -type f -iname '*.m[kp][v4]' | grep -v '*.proxy' | grep -v '*.original' | wc -l) more to go."
+		#echo
+		echo "Processing MKV $f..."
 		
 		if [[ $(readlink "$f") ]]; then
 			echo "The files was already processed, skipping."
@@ -53,8 +81,10 @@ encode () {
 		ln -s "$(basename "$f").proxy" "$f"
 		echo
 
-	done < files
-	rm files
+	done < files-mkv
+	
+	
+
 }
 
 original () {
